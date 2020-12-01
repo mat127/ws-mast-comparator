@@ -1,0 +1,45 @@
+body {
+    padding: 1rem;
+}
+
+table {
+border-spacing: 0;
+border: 1px solid black;
+}
+
+tr {
+  :last-child {
+    td {
+      border-bottom: 0;
+    }
+  }
+}
+
+th,
+td {
+  margin: 0;
+  padding: 0.5rem;
+  border-bottom: 1px solid black;
+  border-right: 1px solid black;
+  text-align: center;
+
+  :last-child {
+    border-right: 0;
+  }
+}
+
+td.mast-name {
+  text-align: left;
+}
+
+.hard-top {
+  background: #00a3e2;
+}
+
+.constant-curve {
+  background: #c2cd2d;
+}
+
+.flex-top {
+  background: #eb5834;
+}
