@@ -2,7 +2,8 @@ import React from 'react'
 import { useTable } from 'react-table'
 import './Comparator.css';
 
-import { mastData } from './mastData'
+import mastData from './mast/2019.json'
+mastData.forEach(m => m['year'] = 2019);
 
 function ComparatorTable({columns, data}) {
 
