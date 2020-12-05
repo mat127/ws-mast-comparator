@@ -1,161 +1,105 @@
-import React, { useState } from 'react'
-import { useTable, useSortBy } from 'react-table'
+import React from 'react'
 import './Comparator.css';
 
 import mastData from './mast/2019.json'
 mastData.forEach(m => m['year'] = 2019);
 
-function ComparatorTable({columns, data}) {
-
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    rows,
-    prepareRow
-  } = useTable(
-    {
-      columns,
-      data,
-      initialState: {
-        sortBy: React.useMemo(() => [{id: 'similarity', desc: true}],[])
-      }
-    },
-    useSortBy
-  );
-
-  return (
-    <table {...getTableProps()}>
-      <thead>
-        {headerGroups.map(headerGroup => (
-          <tr {...headerGroup.getHeaderGroupProps()}>
-            {headerGroup.headers.map(column => (
-              <th
-                {...column.getHeaderProps([
-                  {className: column.className}
-                ])}
-              >
-                {column.render('Header')}
-              </th>
-            ))}
-          </tr>
-        ))}
-      </thead>
-      <tbody {...getTableBodyProps()}>
-        {rows.map((row, i) => {
-          prepareRow(row)
-          return (
-            <tr {...row.getRowProps()}>
-              {row.cells.map(cell => {
-                return <td
-                  {...cell.getCellProps([
-                    { className: cell.column.className }
-                  ])}
-                >{cell.column.renderCell ?
-                  cell.column.renderCell(cell.value,cell.row) :
-                  cell.render('Cell')
-                }</td>
-              })}
-            </tr>
-          )
-        })}
-      </tbody>
-    </table>
-  );
-}
-
 function Comparator() {
-    
-    const columns = React.useMemo(
-        () => [
-          {
-            Header: 'Name',
-            accessor: 'name',
-            className: 'mast-name',
-            renderCell: (value,row) => NameCell(value,row)
-          },
-            {
-            Header: 'Year',
-            accessor: 'year'
-            },
-            {
-            Header: 'Size',
-            accessor: 'size'
-            },
-            {
-            Header: 'Length',
-            accessor: 'length'
-            },
-            getProfileColumns({
-                Header: "Hard top",
-                className: 'hard-top',
-                id: 'ht',
-                baseProfileValue: 0
-            }),
-            getProfileColumns({
-                Header: 'Constant curve',
-                className: 'constant-curve',
-                id: 'cc',
-                baseProfileValue: 5
-            }),
-            getProfileColumns({
-                Header: 'Flex top',
-                className: 'flex-top',
-                id: 'ft',
-                baseProfileValue: 10
-            }),
-          {
-            Header: 'Similarity',
-            id: 'similarity',
-            accessor: (row,index) => 3 - Math.abs(row['profile'] - 8)
-          }
-        ],
-        []
-    );
-  
-    const data = React.useMemo(() => mastData, []);
-
-    return (
-        <ComparatorTable columns={columns} data={data} />
-    );
-}
-
-function getProfileColumns(props) {
-    Object.assign(props,
-        { columns: Array.of(1,2,3,4,5).map(i => getProfileColumn(props, i)) }
-    );
-    return props;
-}
-
-const sym = ['➀', '➁', '➂', '➃', '➄'];
-
-function getProfileColumn(props, index) {
-    return {
-        Header: sym[index-1],
-        className: props.className,
-        id: props.id + index,
-        accessor: (row, i) => getProfile(row,props.baseProfileValue + index),
-        Cell: ({value}) => ProfileCell(value)
-    };
-}
-
-function getProfile(row,profile) {
-    return Math.abs(row['profile'] - profile) <= 1;
-}
-
-function ProfileCell(value) {
-    return (
-        value ? '✔' : ''
-    );
-}
-
-function NameCell(value,row) {
   return (
-    <button
-      className="mast-name"
-      onClick={()=>alert(row.values['name'])}
-    >{value}</button>
+    <Table/>
   );
 }
 
 export default Comparator
+  
+function Table() {
+  return (
+    <table>
+      <TableHeader/>
+      <TableBody/>
+    </table>
+  );
+}
+
+function TableHeader() {
+  return (
+    <thead>
+      <tr>
+        <th rowSpan="2">Name</th>
+        <th rowSpan="2">Year</th>
+        <th rowSpan="2">Size</th>
+        <th rowSpan="2">Length</th>
+        <th colSpan="5" className="hard-top">Hard top</th>
+        <th colSpan="5" className="constant-curve">Constant curve</th>
+        <th colSpan="5" className="flex-top">Flex Top</th>
+      </tr>
+      <tr>
+        <ProfileHeaderColumns className="hard-top"/>
+        <ProfileHeaderColumns className="constant-curve"/>
+        <ProfileHeaderColumns className="flex-top"/>
+      </tr>
+    </thead>
+  );
+}
+
+function ProfileHeaderColumns(props) {
+  return (
+    Array.of('➀', '➁', '➂', '➃', '➄')
+      .map((s) => <td {...props}>{s}</td>)
+  );
+}
+  
+function TableBody() {
+  return (
+    <tbody>
+      {mastData.map((m) => <MastRow row={m}/>)}
+    </tbody>
+  );
+}
+
+function MastRow(props) {
+  return (
+    <tr>
+      <td>{props.row['name']}</td>
+      <td>{props.row['year']}</td>
+      <td>{props.row['size']}</td>
+      <td>{props.row['length']}</td>
+      <ProfileDataColumns {...props}/>
+    </tr>
+  );
+}
+
+class ProfileDataColumns extends React.Component {
+
+  render() {
+    const values = this.calculateColumnValues(this.props.row['profile']);
+    return (
+      values.map((v,i) => this.renderColumn(v,i))
+    );
+  }
+
+  renderColumn(value,index) {
+    return (
+      <td className={this.getColumnClassName(index)}>
+        {value ? '✔' : ''}
+      </td>
+    );
+  }
+
+  calculateColumnValues(profile) {
+    var values = new Array(15);
+    for(let i=0; i < values.length; i++)
+      values[i] = (Math.abs(profile - (i + 1)) <= 1);
+    return values;
+  }
+
+  getColumnClassName(index) {
+    if(index < 5)
+      return "hard-top";
+    else if(index < 10)
+      return 'constant-curve';
+    else
+      return "flex-top";
+  }
+};
+
