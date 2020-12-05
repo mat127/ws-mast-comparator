@@ -32,6 +32,15 @@ td.mast-name {
   text-align: left;
 }
 
+button.mast-name {
+    color: blue;
+    text-decoration: underline;
+    background: none;
+    margin: 0;
+    border: none;
+    cursor: pointer
+}
+
 .hard-top {
   background: #00a3e2;
 }

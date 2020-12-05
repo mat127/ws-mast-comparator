@@ -1,5 +1,5 @@
-import React from 'react'
-import { useTable } from 'react-table'
+import React, { useState } from 'react'
+import { useTable, useSortBy } from 'react-table'
 import './Comparator.css';
 
 import mastData from './mast/2019.json'
@@ -7,16 +7,22 @@ mastData.forEach(m => m['year'] = 2019);
 
 function ComparatorTable({columns, data}) {
 
-    const {
-        getTableProps,
-        getTableBodyProps,
-        headerGroups,
-        rows,
-        prepareRow
-    } = useTable({
-        columns,
-        data
-    });
+  const {
+    getTableProps,
+    getTableBodyProps,
+    headerGroups,
+    rows,
+    prepareRow
+  } = useTable(
+    {
+      columns,
+      data,
+      initialState: {
+        sortBy: React.useMemo(() => [{id: 'similarity', desc: true}],[])
+      }
+    },
+    useSortBy
+  );
 
   return (
     <table {...getTableProps()}>
@@ -45,9 +51,10 @@ function ComparatorTable({columns, data}) {
                   {...cell.getCellProps([
                     { className: cell.column.className }
                   ])}
-                >
-                  {cell.render('Cell')}
-                </td>
+                >{cell.column.renderCell ?
+                  cell.column.renderCell(cell.value,cell.row) :
+                  cell.render('Cell')
+                }</td>
               })}
             </tr>
           )
@@ -61,11 +68,12 @@ function Comparator() {
     
     const columns = React.useMemo(
         () => [
-            {
+          {
             Header: 'Name',
             accessor: 'name',
-            className: 'mast-name'
-            },
+            className: 'mast-name',
+            renderCell: (value,row) => NameCell(value,row)
+          },
             {
             Header: 'Year',
             accessor: 'year'
@@ -95,7 +103,12 @@ function Comparator() {
                 className: 'flex-top',
                 id: 'ft',
                 baseProfileValue: 10
-            })
+            }),
+          {
+            Header: 'Similarity',
+            id: 'similarity',
+            accessor: (row,index) => 3 - Math.abs(row['profile'] - 8)
+          }
         ],
         []
     );
@@ -134,6 +147,15 @@ function ProfileCell(value) {
     return (
         value ? '✔' : ''
     );
+}
+
+function NameCell(value,row) {
+  return (
+    <button
+      className="mast-name"
+      onClick={()=>alert(row.values['name'])}
+    >{value}</button>
+  );
 }
 
 export default Comparator
