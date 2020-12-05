@@ -32,8 +32,22 @@ td.mast-name {
   text-align: left;
 }
 
+tr.selected-mast {
+  background-color: greenyellow;
+}
+
 button.mast-name {
     color: blue;
+    text-decoration: underline;
+    background: none;
+    margin: 0;
+    border: none;
+    cursor: pointer
+}
+
+button.profile-column-header {
+    color: black;
+    font-weight: bold;
     text-decoration: underline;
     background: none;
     margin: 0;
