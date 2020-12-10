@@ -4,55 +4,68 @@ import './Comparator.css';
 import mastData from './mast/2019.json'
 mastData.forEach(m => m.year = 2019);
 
-function Comparator() {
-  return (
-    <Table/>
-  );
-}
-
-export default Comparator
-  
-class Table extends React.Component {
+class Comparator extends React.Component {
   
   constructor(props) {
     super(props);
     this.state = {
-      selectedMast: undefined,
+      comparedMasts: [],
       selectedProfile: undefined
     };
   }
 
   render() {
     return (
-      <table>
-        <TableHeader
-          onNameAscendingClick={() => this.sortByNameAscending()}
-          onNameDescendingClick={() => this.sortByNameDescending()}
-          onProfileClick={(profile => this.selectProfile(profile))}
-          table={this}
-        />
-        <TableBody
-          onNameClick={(mast => this.selectMast(mast))}
-          table={this}
-        />
-      </table>
+      <div>
+        <h1>Windsurfing Mast Comparator</h1>
+        <table>
+          <ComparatorHeader comparator={this} />
+          <tbody>
+            <ComparedMasts masts={this.state.comparedMasts} comparator={this}/>
+            <ComparatorFooter comparator={this}/>
+            <SortingHeader comparator={this}/>
+            <NotComparedMasts comparator={this}/>
+          </tbody>
+        </table>
+      </div>
     );
   }
 
-  selectMast(mast) {
-    mastData.sort((m1,m2) => this.compareToMast(m1,m2,mast));
+  compare(mast) {
+    let change = {
+      comparedMasts: this.state.comparedMasts.concat([mast])
+    };
+    if(this.isAnyCompared())
+      this.setState(change);
+    else
+      this.selectProfile(mast.profile, change);
+  }
+
+  remove(mast) {
+    let change = {
+      comparedMasts: this.state.comparedMasts.filter(m => m !==mast)
+    };
+    this.setState(change);
+  }
+
+  removeAll() {
     this.setState({
-      selectedMast: mast,
-      selectedProfile: mast.profile
+      comparedMasts: []
     });
   }
 
-  selectProfile(profile) {
+  isCompared(mast) {
+    return this.state.comparedMasts.includes(mast);
+  }
+
+  isAnyCompared() {
+    return this.state.comparedMasts.length > 0;
+  }
+
+  selectProfile(profile, stateChange = {}) {
     mastData.sort((m1,m2) => this.compareToProfile(m1,m2,profile));
-    this.setState({
-      selectedMast: undefined,
-      selectedProfile: profile
-    });
+    stateChange.selectedProfile = profile;
+    this.setState(stateChange);
   }
 
   getProfileClassName(profile) {
@@ -69,7 +82,6 @@ class Table extends React.Component {
   sortByName(sort) {
     mastData.sort(sort);
     this.setState({
-      selectedMast: undefined,
       selectedProfile: undefined
     });
   }
@@ -111,84 +123,161 @@ class Table extends React.Component {
   }
 };
  
-function TableHeader(props) {
+export default Comparator
+  
+function ComparatorHeader(props) {
+  let comparator = props.comparator;
   return (
     <thead>
       <tr>
-        <th rowSpan="2">
-          Name
-          <button
-            className="sort-button"
-            style={{'padding-left': '8px'}}
-            onClick={() => props.onNameAscendingClick()}
-          >&#x25b4;</button>
-          <button
-            className="sort-button"
-            onClick={() => props.onNameDescendingClick()}
-          >&#x25be;</button>
-        </th>
-        <th rowSpan="2">Year</th>
-        <th rowSpan="2">Size</th>
-        <th rowSpan="2">Length</th>
+        <th>Producer</th>
+        <th>Year</th>
+        <th>Size</th>
+        <th>Length</th>
         <th colSpan="5" className="hard-top">
           <button
-            className="profile-column-header"
-            onClick={() => props.onProfileClick(3)}
+            title="Sort hard top first"
+            className="plain profile-group-header"
+            onClick={() => comparator.selectProfile(3)}
           >Hard top</button>
         </th>
         <th colSpan="5" className="constant-curve">
           <button
-            className="profile-column-header"
-            onClick={() => props.onProfileClick(8)}
+            title="Sort constant curve first"
+            className="plain profile-group-header"
+            onClick={() => comparator.selectProfile(8)}
           >Constant curve</button>
         </th>
         <th colSpan="5" className="flex-top">
           <button
-            className="profile-column-header"
-            onClick={() => props.onProfileClick(13)}
+            title="Sort flex top first"
+            className="plain profile-group-header"
+            onClick={() => comparator.selectProfile(13)}
           >Flex Top</button>
         </th>
       </tr>
-      <ProfileHeaderRow {...props}/>
     </thead>
   );
 }
 
-function ProfileHeaderRow(props) {
-  let columns = Array(15);
-  for(let profile = 1; profile <= columns.length; profile++) {
-    columns[profile-1] =
-        <td {...props} className={props.table.getProfileClassName(profile)}>
+class ComparatorFooter extends React.Component {
+
+  render() {
+    return (
+      <td
+        colspan="19"
+        style={{'text-align': 'left'}}
+      >
+        { this.props.comparator.isAnyCompared() ?
+          this.renderNonEmpty() :
+          this.renderEmpty()
+        }
+      </td>
+    );
+  }
+
+  renderEmpty() {
+    return (
+      <span>Use the &#9878; icon next to a producer name to add the mast to the comparison.</span>
+    );
+  }
+
+  renderNonEmpty() {
+    return (
+      <button
+        className="plain hypertext"
+        onClick={() => this.props.comparator.removeAll()}
+      >Remove all compared masts above.</button>
+    );
+  }
+};
+
+class SortingHeader extends React.Component {
+  
+  render() {
+    let comparator = this.props.comparator;
+    return (
+      <tr>
+        <td className="header">Producer
           <button
-            className="sort-button"
-            onClick={() => props.onProfileClick(profile)}
+            title="Sort ascending by producer name"
+            className="plain sort left-padded"
+            onClick={() => comparator.sortByNameAscending()}
+          >&#x25b2;</button>
+          <button
+            title="Sort descending by producer name"
+            className="plain sort"
+            onClick={() => comparator.sortByNameDescending()}
+          >&#x25bc;</button>
+        </td>
+        <td className="header">Year</td>
+        <td className="header">Size</td>
+        <td className="header">Length</td>
+        {this.getProfileColumns()}
+      </tr>
+    );
+  }
+
+  getProfileColumns() {
+    let comparator = this.props.comparator;
+    let columns = Array(15);
+    for(let profile = 1; profile <= columns.length; profile++) {
+      columns[profile-1] =
+        <td {...this.props} className={comparator.getProfileClassName(profile)}>
+          <button
+            title="Sort this profile first"
+            className="plain sort"
+            onClick={() => comparator.selectProfile(profile)}
           >&#x25bc;</button>
         </td>;
+    }
+    return columns;
   }
-  return (<tr>{columns}</tr>);
+};
+
+function ComparedMasts(props) {
+  return props.masts
+    .map(m => <MastRow {...props} mast={m} buttons={getComparedButtons(m,props)}/>);
 }
-  
-function TableBody(props) {
-  return (
-    <tbody>
-      {mastData.map((m,i) => <MastRow {...props} mast={m} index={i}/>)}
-    </tbody>
-  );
+
+function NotComparedMasts(props) {
+  let comparator = props.comparator;
+  return mastData
+      .filter(m => !comparator.isCompared(m))
+      .map(m => <MastRow {...props} mast={m} buttons={getNotComparedButtons(m,props)}/>);
+}
+
+function getComparedButtons(mast,props) {
+  let comparator = props.comparator;
+  return [
+    <button
+      title="Remove from comparison"
+      className="plain"
+      onClick={() => comparator.remove(mast)}
+    >
+      &#x274C;
+    </button>
+  ];
+}
+
+function getNotComparedButtons(mast,props) {
+  let comparator = props.comparator;
+  return [
+    <button
+      title="Add to comparison"
+      className="plain bigger"
+      onClick={() => comparator.compare(mast)}
+    >
+      &#9878;
+    </button>
+  ];
 }
 
 function MastRow(props) {
-  let style = {};
-  if(props.mast === props.selectedMast)
-    style.className = 'selected-mast';
   return (
-    <tr {...style}>
+    <tr>
       <td className="mast-name">
-        <button
-          className="compare-button"
-          onClick={() => props.onNameClick(props.mast)}
-        >
-          &#9878;
-        </button>
+        {props.buttons}
         {props.mast.name}
       </td>
       <td>{props.mast.year}</td>
@@ -209,8 +298,9 @@ class ProfileDataColumns extends React.Component {
   }
 
   renderColumn(profile,value) {
+    let comparator = this.props.comparator;
     return (
-      <td className={this.props.table.getProfileClassName(profile)}>
+      <td className={comparator.getProfileClassName(profile)}>
         {value ? '✔' : ''}
       </td>
     );
@@ -223,4 +313,3 @@ class ProfileDataColumns extends React.Component {
     return values;
   }
 };
-
