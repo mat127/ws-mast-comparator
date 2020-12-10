@@ -25,10 +25,15 @@ class Table extends React.Component {
   render() {
     return (
       <table>
-        <TableHeader onProfileClick={(profile => this.selectProfile(profile))}/>
+        <TableHeader
+          onNameAscendingClick={() => this.sortByNameAscending()}
+          onNameDescendingClick={() => this.sortByNameDescending()}
+          onProfileClick={(profile => this.selectProfile(profile))}
+          table={this}
+        />
         <TableBody
           onNameClick={(mast => this.selectMast(mast))}
-          selectedMast={this.state.selectedMast}
+          table={this}
         />
       </table>
     );
@@ -48,6 +53,33 @@ class Table extends React.Component {
       selectedMast: undefined,
       selectedProfile: profile
     });
+  }
+
+  getProfileClassName(profile) {
+    if(profile === this.state.selectedProfile)
+      return "selected-profile";
+    else if(profile <= 5)
+      return "hard-top";
+    else if(profile <= 10)
+      return "constant-curve";
+    else
+      return "flex-top";
+  }
+
+  sortByName(sort) {
+    mastData.sort(sort);
+    this.setState({
+      selectedMast: undefined,
+      selectedProfile: undefined
+    });
+  }
+
+  sortByNameDescending() {
+    this.sortByName((m1,m2) => -1*this.compareMastName(m1,m2));
+  }
+
+  sortByNameAscending() {
+    this.sortByName(this.compareMastName);
   }
 
   compareToMast(m1,m2,mast) {
@@ -83,7 +115,18 @@ function TableHeader(props) {
   return (
     <thead>
       <tr>
-        <th rowSpan="2">Name</th>
+        <th rowSpan="2">
+          Name
+          <button
+            className="sort-button"
+            style={{'padding-left': '8px'}}
+            onClick={() => props.onNameAscendingClick()}
+          >&#x25b4;</button>
+          <button
+            className="sort-button"
+            onClick={() => props.onNameDescendingClick()}
+          >&#x25be;</button>
+        </th>
         <th rowSpan="2">Year</th>
         <th rowSpan="2">Size</th>
         <th rowSpan="2">Length</th>
@@ -106,26 +149,23 @@ function TableHeader(props) {
           >Flex Top</button>
         </th>
       </tr>
-      <tr>
-        <ProfileHeaderColumns {...props} className="hard-top" baseProfile={0}/>
-        <ProfileHeaderColumns {...props} className="constant-curve" baseProfile={5}/>
-        <ProfileHeaderColumns {...props} className="flex-top" baseProfile={10}/>
-      </tr>
+      <ProfileHeaderRow {...props}/>
     </thead>
   );
 }
 
-function ProfileHeaderColumns(props) {
-  return (
-    Array.of('➀', '➁', '➂', '➃', '➄')
-      .map((s,i) =>
-        <td {...props}>
+function ProfileHeaderRow(props) {
+  let columns = Array(15);
+  for(let profile = 1; profile <= columns.length; profile++) {
+    columns[profile-1] =
+        <td {...props} className={props.table.getProfileClassName(profile)}>
           <button
-            className="profile-column-header"
-            onClick={() => props.onProfileClick(props.baseProfile+i+1)}
-          >{s}</button>
-        </td>)
-  );
+            className="sort-button"
+            onClick={() => props.onProfileClick(profile)}
+          >&#x25bc;</button>
+        </td>;
+  }
+  return (<tr>{columns}</tr>);
 }
   
 function TableBody(props) {
@@ -144,11 +184,12 @@ function MastRow(props) {
     <tr {...style}>
       <td className="mast-name">
         <button
-          className="mast-name"
+          className="compare-button"
           onClick={() => props.onNameClick(props.mast)}
         >
-          {props.mast.name}
+          &#9878;
         </button>
+        {props.mast.name}
       </td>
       <td>{props.mast.year}</td>
       <td>{props.mast.size}</td>
@@ -163,13 +204,13 @@ class ProfileDataColumns extends React.Component {
   render() {
     const values = this.calculateColumnValues(this.props.mast['profile']);
     return (
-      values.map((v,i) => this.renderColumn(v,i))
+      values.map((v,i) => this.renderColumn(i+1,v))
     );
   }
 
-  renderColumn(value,index) {
+  renderColumn(profile,value) {
     return (
-      <td className={this.getColumnClassName(index)}>
+      <td className={this.props.table.getProfileClassName(profile)}>
         {value ? '✔' : ''}
       </td>
     );
@@ -180,15 +221,6 @@ class ProfileDataColumns extends React.Component {
     for(let i=0; i < values.length; i++)
       values[i] = (Math.abs(profile - (i + 1)) <= 1);
     return values;
-  }
-
-  getColumnClassName(index) {
-    if(index < 5)
-      return "hard-top";
-    else if(index < 10)
-      return 'constant-curve';
-    else
-      return "flex-top";
   }
 };
 

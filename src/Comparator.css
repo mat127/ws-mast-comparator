@@ -32,13 +32,19 @@ td.mast-name {
   text-align: left;
 }
 
-tr.selected-mast {
+td.selected-profile {
   background-color: greenyellow;
 }
 
-button.mast-name {
-    color: blue;
-    text-decoration: underline;
+button.sort-button {
+    background: none;
+    margin: 0;
+    padding: 1px;
+    border: none;
+    cursor: pointer
+}
+
+button.compare-button {
     background: none;
     margin: 0;
     border: none;
@@ -48,7 +54,6 @@ button.mast-name {
 button.profile-column-header {
     color: black;
     font-weight: bold;
-    text-decoration: underline;
     background: none;
     margin: 0;
     border: none;
