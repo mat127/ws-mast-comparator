@@ -51,6 +51,19 @@ td.selected-profile {
   background-color: greenyellow;
 }
 
+span.clickable {
+    cursor: pointer
+}
+
+span.left-padded {
+    padding-left: 8px;
+}
+
+span.padded {
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
 button.plain {
     background: none;
     margin: 0;
@@ -60,10 +73,6 @@ button.plain {
 
 button.sort {
     padding: 1px;
-}
-
-button.left-padded {
-    padding-left: 8px;
 }
 
 button.bigger {
@@ -84,10 +93,18 @@ button.profile-group-header {
   background: #00a3e2;
 }
 
+.hard-top {
+  background: #00a3e2;
+}
+
 .constant-curve {
   background: #c2cd2d;
 }
 
 .flex-top {
   background: #eb5834;
+}
+
+.highlighted {
+  filter: brightness(125%);
 }
