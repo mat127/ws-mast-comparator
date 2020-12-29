@@ -2,15 +2,17 @@ body {
     padding: 1rem;
 }
 
-h1 {
-    text-align: center;
+#filter {
+  display: inline-block;
+  width: 120px;
+  margin-right: 10px;
+  vertical-align: top;
 }
 
 table {
-    border-spacing: 0;
-    border: 1px solid black;
-    margin-left: auto;
-    margin-right: auto;
+  display: inline-block;
+  border-spacing: 0;
+  border: 1px solid black;
 }
 
 tr {

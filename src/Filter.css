@@ -1,0 +1,10 @@
+.block {
+  display: block
+}
+
+label.group {
+  display: block;
+  padding-top: 0.7rem;
+  padding-bottom: 0.3rem;
+  font-weight: bold;
+}

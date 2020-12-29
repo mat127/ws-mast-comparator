@@ -1,8 +1,10 @@
 import React from 'react'
+import Filter, { FilterState } from './Filter.js';
 import './Comparator.css';
 
 import mastData from './mast/2019.json'
 mastData.forEach(m => m.year = 2019);
+mastData.forEach((m,i) => m.id = m.year*1000 + i);
 
 class ProfileClass {
   constructor(min,max,className) {
@@ -39,31 +41,38 @@ class ProfileClass {
   }
 }
 
-class Comparator extends React.Component {
+export default class Comparator extends React.Component {
   
   constructor(props) {
     super(props);
     this.state = {
       comparedMasts: [],
-      highlightedProfile: undefined
+      highlightedProfile: undefined,
+      filter: new FilterState()
     };
   }
 
   render() {
     return (
       <div>
-        <h1>Windsurfing Mast Comparator</h1>
+        <Filter state={this.state.filter} onChange={c => this.filterChanged(c)}/>
         <table>
           <ComparatorHeader comparator={this} />
           <tbody>
             <ComparedMasts masts={this.state.comparedMasts} comparator={this}/>
             <ComparatorFooter comparator={this}/>
             <SortingHeader comparator={this}/>
-            <NotComparedMasts comparator={this}/>
+            <NotComparedMasts filter={m => this.state.filter.filter(m)} comparator={this}/>
           </tbody>
         </table>
       </div>
     );
+  }
+
+  filterChanged(change) {
+    const filter = new FilterState(this.state.filter);
+    change(filter);
+    this.setState({filter: filter});
   }
 
   compare(mast) {
@@ -171,8 +180,6 @@ class Comparator extends React.Component {
   }
 };
  
-export default Comparator
-
 function ComparatorHeader(props) {
   let comparator = props.comparator;
   let getClassName = (profileClass) => {
@@ -218,15 +225,17 @@ class ComparatorFooter extends React.Component {
 
   render() {
     return (
-      <td
-        colspan="19"
-        style={{'text-align': 'left'}}
-      >
-        { this.props.comparator.isAnyCompared() ?
-          this.renderNonEmpty() :
-          this.renderEmpty()
-        }
-      </td>
+      <tr>
+        <td
+          colSpan="19"
+          style={{textAlign: 'left'}}
+        >
+          { this.props.comparator.isAnyCompared() ?
+            this.renderNonEmpty() :
+            this.renderEmpty()
+          }
+        </td>
+      </tr>
     );
   }
 
@@ -276,7 +285,7 @@ class SortingHeader extends React.Component {
     let columns = Array(15);
     for(let profile = 1; profile <= columns.length; profile++) {
       columns[profile-1] =
-        <td {...this.props} className={comparator.getProfileClassName(profile)}>
+        <td {...this.props} key={profile} className={comparator.getProfileClassName(profile)}>
           <span
             title="Sort this profile first"
             className="clickable"
@@ -294,25 +303,27 @@ function ComparedMasts(props) {
     <span
       title="Remove from comparison"
       className="clickable"
+      key="remove"
       onClick={() => comparator.remove(mast)}
     >✖</span>
   ];
   return props.masts
-    .map(m => <MastRow {...props} mast={m} buttons={buttons(m)}/>);
+    .map(m => <MastRow {...props} mast={m} buttons={buttons(m)} key={m.id}/>);
 }
 
 function NotComparedMasts(props) {
   let comparator = props.comparator;
-  let buttons =(mast) => [
+  let buttons = (mast) => [
     <span
       title="Add to comparison"
       className="clickable"
+      key="add"
       onClick={() => comparator.compare(mast)}
     >✚</span>
   ];
   return mastData
-      .filter(m => !comparator.isCompared(m))
-      .map(m => <MastRow {...props} mast={m} buttons={buttons(m)}/>);
+      .filter(m => !comparator.isCompared(m) && props.filter(m))
+      .map((m) => <MastRow {...props} mast={m} buttons={buttons(m)} key={m.id}/>);
 }
 
 function MastRow(props) {
@@ -342,7 +353,7 @@ class ProfileDataColumns extends React.Component {
   renderColumn(profile,value) {
     let comparator = this.props.comparator;
     return (
-      <td className={comparator.getProfileClassName(profile)}>
+      <td className={comparator.getProfileClassName(profile)} key={profile}>
         {value ? this.renderClickableMark(() => comparator.sortProfileFirst(profile)) : ''}
       </td>
     );
