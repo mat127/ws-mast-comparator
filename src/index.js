@@ -1,7 +1,6 @@
-import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
 import Comparator from './Comparator';
+import './index.css';
 
 ReactDOM.render(
     <Comparator />,

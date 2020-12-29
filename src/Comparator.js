@@ -2,11 +2,10 @@ import React from 'react'
 import Filter, { FilterState } from './Filter.js';
 import './Comparator.css';
 
-import mastData from './mast/2019.json'
-mastData.forEach(m => m.year = 2019);
-mastData.forEach((m,i) => m.id = m.year*1000 + i);
+import loadMastData from './mast/all.js'
 
 class ProfileClass {
+
   constructor(min,max,className) {
     this.min = min;
     this.max = max;
@@ -36,7 +35,7 @@ class ProfileClass {
   }
 
   static getClassNameOf(profile) {
-    let cls = this.getClassOf(profile);
+    const cls = this.getClassOf(profile);
     return cls ? cls.className : undefined;
   }
 }
@@ -46,10 +45,15 @@ export default class Comparator extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      allMasts: [],
       comparedMasts: [],
       highlightedProfile: undefined,
       filter: new FilterState()
     };
+    loadMastData().then(data => {
+      this.setState({ allMasts: data });
+      return data;
+    });
   }
 
   render() {
@@ -62,7 +66,11 @@ export default class Comparator extends React.Component {
             <ComparedMasts masts={this.state.comparedMasts} comparator={this}/>
             <ComparatorFooter comparator={this}/>
             <SortingHeader comparator={this}/>
-            <NotComparedMasts filter={m => this.state.filter.filter(m)} comparator={this}/>
+            <NotComparedMasts
+              masts={this.state.allMasts}
+              filter={m => this.state.filter.filter(m)}
+              comparator={this}
+            />
           </tbody>
         </table>
       </div>
@@ -117,13 +125,14 @@ export default class Comparator extends React.Component {
   }
     
   sortProfileFirst(profile) {
-    mastData.sort((m1,m2) => this.compareToProfile(m1,m2,profile));
-    if(this.isAnyCompared())
-      this.forceUpdate();
-    else
-      this.setState({
-        highlightedProfile: profile
-      });
+    const sorted = Array.from(this.state.allMasts)
+      .sort((m1,m2) => this.compareToProfile(m1,m2,profile));
+    const state = {
+      allMasts: sorted
+    };
+    if(!this.isAnyCompared())
+      state.highlightedProfile = profile;
+    this.setState(state);
   }
 
   getProfileClassName(profile) {
@@ -134,13 +143,14 @@ export default class Comparator extends React.Component {
   }
 
   sortByName(sort) {
-    mastData.sort(sort);
-    if(this.isAnyCompared())
-      this.forceUpdate();
-    else
-      this.setState({
-        highlightedProfile: undefined
-      });
+    const sorted = Array.from(this.state.allMasts)
+      .sort(sort);
+    const state = {
+      allMasts: sorted
+    };
+    if(!this.isAnyCompared())
+      state.highlightedProfile = undefined;
+    this.setState(state);
   }
 
   sortByNameDescending() {
@@ -321,7 +331,7 @@ function NotComparedMasts(props) {
       onClick={() => comparator.compare(mast)}
     >✚</span>
   ];
-  return mastData
+  return props.masts
       .filter(m => !comparator.isCompared(m) && props.filter(m))
       .map((m) => <MastRow {...props} mast={m} buttons={buttons(m)} key={m.id}/>);
 }
