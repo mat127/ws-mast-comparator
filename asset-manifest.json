@@ -1,8 +1,8 @@
 {
   "files": {
-    "main.css": "/ws-mast-comparator/static/css/main.7e752562.chunk.css",
-    "main.js": "/ws-mast-comparator/static/js/main.69f005f4.chunk.js",
-    "main.js.map": "/ws-mast-comparator/static/js/main.69f005f4.chunk.js.map",
+    "main.css": "/ws-mast-comparator/static/css/main.da1888c1.chunk.css",
+    "main.js": "/ws-mast-comparator/static/js/main.79fbdc42.chunk.js",
+    "main.js.map": "/ws-mast-comparator/static/js/main.79fbdc42.chunk.js.map",
     "runtime-main.js": "/ws-mast-comparator/static/js/runtime-main.abd40656.js",
     "runtime-main.js.map": "/ws-mast-comparator/static/js/runtime-main.abd40656.js.map",
     "static/js/2.f790aa7b.chunk.js": "/ws-mast-comparator/static/js/2.f790aa7b.chunk.js",
@@ -20,13 +20,13 @@
     "static/js/8.5e4a73d8.chunk.js": "/ws-mast-comparator/static/js/8.5e4a73d8.chunk.js",
     "static/js/8.5e4a73d8.chunk.js.map": "/ws-mast-comparator/static/js/8.5e4a73d8.chunk.js.map",
     "index.html": "/ws-mast-comparator/index.html",
-    "static/css/main.7e752562.chunk.css.map": "/ws-mast-comparator/static/css/main.7e752562.chunk.css.map",
+    "static/css/main.da1888c1.chunk.css.map": "/ws-mast-comparator/static/css/main.da1888c1.chunk.css.map",
     "static/js/2.f790aa7b.chunk.js.LICENSE.txt": "/ws-mast-comparator/static/js/2.f790aa7b.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.abd40656.js",
     "static/js/2.f790aa7b.chunk.js",
-    "static/css/main.7e752562.chunk.css",
-    "static/js/main.69f005f4.chunk.js"
+    "static/css/main.da1888c1.chunk.css",
+    "static/js/main.79fbdc42.chunk.js"
   ]
 }
