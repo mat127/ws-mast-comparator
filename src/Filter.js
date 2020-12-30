@@ -5,12 +5,12 @@ export class FilterState {
 
   constructor(source) {
     if(source) {
-      this.size = new Set(source.size);
+      this.diameter = new Set(source.diameter);
       this.year = new Set(source.year);
       this.namePrefix = new Set(source.namePrefix);
     }
     else {
-      this.size = new Set(['SDM', 'RDM']);
+      this.diameter = new Set(['SDM', 'RDM']);
       this.year = new Set([2019]);
       this.namePrefix = new Set();
     }
@@ -18,7 +18,7 @@ export class FilterState {
 
   static createDefaultOptions() {
     return {
-      size: [],
+      diameter: [],
       year: [],
       namePrefix: []
     };
@@ -26,19 +26,19 @@ export class FilterState {
 
   static createOptions(data) {
     let options = {
-      size: new Set(),
+      diameter: new Set(),
       year: new Set(),
       namePrefix: new Set()
     };
     data.forEach(
       function(mast) {
-        options.size.add(mast.size);
+        options.diameter.add(mast.diameter);
         options.year.add(mast.year);
         options.namePrefix.add(mast.name.substr(0,1).toUpperCase());
       }
     );
     options = {
-      size: Array.from(options.size),
+      diameter: Array.from(options.diameter),
       year: Array.from(options.year),
       namePrefix: Array.from(options.namePrefix)
     };
@@ -52,13 +52,13 @@ export class FilterState {
   }
 
   filter(mast) {
-    return this.filterSize(mast.size)
+    return this.filterDiameter(mast.diameter)
       && this.filterYear(mast.year)
       && this.filterName(mast.name);
   }
 
-  filterSize(size) {
-    return this.size.size > 0 ? this.size.has(size) : true;
+  filterDiameter(diameter) {
+    return this.diameter.size > 0 ? this.diameter.has(diameter) : true;
   }
 
   filterYear(year) {
@@ -79,10 +79,10 @@ export default class Filter extends React.Component {
     return (
       <div id="filter">
         <FilterGroup
-          label="Size:"
-          options={options.size}
-          state={state.size}
-          onChange={e => this.sizeChanged(e)}
+          label="Diameter:"
+          options={options.diameter}
+          state={state.diameter}
+          onChange={e => this.diameterChanged(e)}
         />
         <FilterGroup
           label="Year:"
@@ -99,13 +99,13 @@ export default class Filter extends React.Component {
     );
   }
 
-  sizeChanged(event) {
-    const size = event.target.id;
+  diameterChanged(event) {
+    const diameter = event.target.id;
     this.props.onChange(function(state) {
       if(event.target.checked)
-        state.size.add(size);
+        state.diameter.add(diameter);
       else
-        state.size.delete(size);
+        state.diameter.delete(diameter);
     });
   }
 

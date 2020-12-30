@@ -225,7 +225,7 @@ function ComparatorHeader(props) {
       <tr>
         <th>Producer</th>
         <th>Year</th>
-        <th>Size</th>
+        <th>Diameter</th>
         <th>Length</th>
         <th colSpan="5" className={getClassName(ProfileClass.HardTop)}>
           <span
@@ -305,7 +305,7 @@ class SortingHeader extends React.Component {
           >&#x25bc;</span>
         </td>
         <td className="header">Year</td>
-        <td className="header">Size</td>
+        <td className="header">Diameter</td>
         <td className="header">Length</td>
         {this.getProfileColumns()}
       </tr>
@@ -366,7 +366,7 @@ function MastRow(props) {
         <span className="left-padded">{props.mast.name}</span>
       </td>
       <td>{props.mast.year}</td>
-      <td>{props.mast.size}</td>
+      <td>{props.mast.diameter}</td>
       <td>{props.mast.length}</td>
       <ProfileDataColumns {...props}/>
     </tr>
