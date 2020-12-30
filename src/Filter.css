@@ -4,8 +4,8 @@
 
 label.group {
   display: block;
-  padding-top: 0.7rem;
-  padding-bottom: 0.3rem;
+  padding-top: 0.7em;
+  padding-bottom: 0.3em;
   font-weight: bold;
 }
 
@@ -27,5 +27,9 @@ button.name-prefix-checked {
   background: grey;
   color: white;
   font-weight: bold;
+}
+
+button.clear {
+  margin-top: 0.3em;
 }
 

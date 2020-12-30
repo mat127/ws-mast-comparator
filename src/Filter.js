@@ -90,11 +90,13 @@ export default class Filter extends React.Component {
           state={state.year}
           onChange={e => this.yearChanged(e)}
         />
+        <button className="clear" onClick={e => this.clearYearFilter()}>Clear</button>
         <NamePrefixGroup
           options={options.namePrefix}
           state={state.namePrefix}
           onChange={e => this.namePrefixChanged(e)}
         />
+        <button className="clear" onClick={e => this.clearNamePrefixFilter()}>Clear</button>
       </div>
     );
   }
@@ -119,6 +121,12 @@ export default class Filter extends React.Component {
     });
   }
 
+  clearYearFilter() {
+    this.props.onChange(function(state) {
+      state.year.clear();
+    });
+  }
+
   namePrefixChanged(event) {
     const prefix = event.target.id;
     this.props.onChange(function(state) {
@@ -126,6 +134,12 @@ export default class Filter extends React.Component {
         state.namePrefix.delete(prefix);
       else
         state.namePrefix.add(prefix);
+    });
+  }
+
+  clearNamePrefixFilter() {
+    this.props.onChange(function(state) {
+      state.namePrefix.clear();
     });
   }
 };
