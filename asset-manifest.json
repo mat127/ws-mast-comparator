@@ -1,20 +1,32 @@
 {
   "files": {
-    "main.css": "/ws-mast-comparator/static/css/main.cca57be9.chunk.css",
-    "main.js": "/ws-mast-comparator/static/js/main.bee01c52.chunk.js",
-    "main.js.map": "/ws-mast-comparator/static/js/main.bee01c52.chunk.js.map",
-    "runtime-main.js": "/ws-mast-comparator/static/js/runtime-main.c66089f6.js",
-    "runtime-main.js.map": "/ws-mast-comparator/static/js/runtime-main.c66089f6.js.map",
-    "static/js/2.e520ca74.chunk.js": "/ws-mast-comparator/static/js/2.e520ca74.chunk.js",
-    "static/js/2.e520ca74.chunk.js.map": "/ws-mast-comparator/static/js/2.e520ca74.chunk.js.map",
+    "main.css": "/ws-mast-comparator/static/css/main.7e752562.chunk.css",
+    "main.js": "/ws-mast-comparator/static/js/main.69f005f4.chunk.js",
+    "main.js.map": "/ws-mast-comparator/static/js/main.69f005f4.chunk.js.map",
+    "runtime-main.js": "/ws-mast-comparator/static/js/runtime-main.abd40656.js",
+    "runtime-main.js.map": "/ws-mast-comparator/static/js/runtime-main.abd40656.js.map",
+    "static/js/2.f790aa7b.chunk.js": "/ws-mast-comparator/static/js/2.f790aa7b.chunk.js",
+    "static/js/2.f790aa7b.chunk.js.map": "/ws-mast-comparator/static/js/2.f790aa7b.chunk.js.map",
+    "static/js/3.7b5021f1.chunk.js": "/ws-mast-comparator/static/js/3.7b5021f1.chunk.js",
+    "static/js/3.7b5021f1.chunk.js.map": "/ws-mast-comparator/static/js/3.7b5021f1.chunk.js.map",
+    "static/js/4.ac04872f.chunk.js": "/ws-mast-comparator/static/js/4.ac04872f.chunk.js",
+    "static/js/4.ac04872f.chunk.js.map": "/ws-mast-comparator/static/js/4.ac04872f.chunk.js.map",
+    "static/js/5.1d2bd4b3.chunk.js": "/ws-mast-comparator/static/js/5.1d2bd4b3.chunk.js",
+    "static/js/5.1d2bd4b3.chunk.js.map": "/ws-mast-comparator/static/js/5.1d2bd4b3.chunk.js.map",
+    "static/js/6.5bbc3aab.chunk.js": "/ws-mast-comparator/static/js/6.5bbc3aab.chunk.js",
+    "static/js/6.5bbc3aab.chunk.js.map": "/ws-mast-comparator/static/js/6.5bbc3aab.chunk.js.map",
+    "static/js/7.a813e62f.chunk.js": "/ws-mast-comparator/static/js/7.a813e62f.chunk.js",
+    "static/js/7.a813e62f.chunk.js.map": "/ws-mast-comparator/static/js/7.a813e62f.chunk.js.map",
+    "static/js/8.5e4a73d8.chunk.js": "/ws-mast-comparator/static/js/8.5e4a73d8.chunk.js",
+    "static/js/8.5e4a73d8.chunk.js.map": "/ws-mast-comparator/static/js/8.5e4a73d8.chunk.js.map",
     "index.html": "/ws-mast-comparator/index.html",
-    "static/css/main.cca57be9.chunk.css.map": "/ws-mast-comparator/static/css/main.cca57be9.chunk.css.map",
-    "static/js/2.e520ca74.chunk.js.LICENSE.txt": "/ws-mast-comparator/static/js/2.e520ca74.chunk.js.LICENSE.txt"
+    "static/css/main.7e752562.chunk.css.map": "/ws-mast-comparator/static/css/main.7e752562.chunk.css.map",
+    "static/js/2.f790aa7b.chunk.js.LICENSE.txt": "/ws-mast-comparator/static/js/2.f790aa7b.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
-    "static/js/runtime-main.c66089f6.js",
-    "static/js/2.e520ca74.chunk.js",
-    "static/css/main.cca57be9.chunk.css",
-    "static/js/main.bee01c52.chunk.js"
+    "static/js/runtime-main.abd40656.js",
+    "static/js/2.f790aa7b.chunk.js",
+    "static/css/main.7e752562.chunk.css",
+    "static/js/main.69f005f4.chunk.js"
   ]
 }
