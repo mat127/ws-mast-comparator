@@ -48,10 +48,13 @@ export default class Comparator extends React.Component {
       allMasts: [],
       comparedMasts: [],
       highlightedProfile: undefined,
-      filter: new FilterState()
+      filter: {
+        state: new FilterState(),
+        options: FilterState.createDefaultOptions()
+      }
     };
     loadMastData().then(data => {
-      this.setState({ allMasts: data });
+      this.setMastData(data);
       return data;
     });
   }
@@ -59,7 +62,11 @@ export default class Comparator extends React.Component {
   render() {
     return (
       <div>
-        <Filter state={this.state.filter} onChange={c => this.filterChanged(c)}/>
+        <Filter
+          state={this.state.filter.state}
+          options={this.state.filter.options}
+          onChange={c => this.filterChanged(c)}
+        />
         <table>
           <ComparatorHeader comparator={this} />
           <tbody>
@@ -68,7 +75,7 @@ export default class Comparator extends React.Component {
             <SortingHeader comparator={this}/>
             <NotComparedMasts
               masts={this.state.allMasts}
-              filter={m => this.state.filter.filter(m)}
+              filter={m => this.state.filter.state.filter(m)}
               comparator={this}
             />
           </tbody>
@@ -77,10 +84,25 @@ export default class Comparator extends React.Component {
     );
   }
 
+  setMastData(data) {
+    this.setState({
+      allMasts: data,
+      filter: {
+        state: this.state.filter.state,
+        options: FilterState.createOptions(data)
+      }
+    });
+  }
+
   filterChanged(change) {
-    const filter = new FilterState(this.state.filter);
-    change(filter);
-    this.setState({filter: filter});
+    const state = this.state.filter.state.clone();
+    change(state);
+    this.setState({
+      filter: {
+        state: state,
+        options: this.state.filter.options
+      }
+    });
   }
 
   compare(mast) {
