@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/ws-mast-comparator/static/css/main.41ba4161.chunk.css",
-    "main.js": "/ws-mast-comparator/static/js/main.a785ddf4.chunk.js",
-    "main.js.map": "/ws-mast-comparator/static/js/main.a785ddf4.chunk.js.map",
+    "main.js": "/ws-mast-comparator/static/js/main.c68c6b93.chunk.js",
+    "main.js.map": "/ws-mast-comparator/static/js/main.c68c6b93.chunk.js.map",
     "runtime-main.js": "/ws-mast-comparator/static/js/runtime-main.efe7f77c.js",
     "runtime-main.js.map": "/ws-mast-comparator/static/js/runtime-main.efe7f77c.js.map",
     "static/js/2.f790aa7b.chunk.js": "/ws-mast-comparator/static/js/2.f790aa7b.chunk.js",
@@ -27,6 +27,6 @@
     "static/js/runtime-main.efe7f77c.js",
     "static/js/2.f790aa7b.chunk.js",
     "static/css/main.41ba4161.chunk.css",
-    "static/js/main.a785ddf4.chunk.js"
+    "static/js/main.c68c6b93.chunk.js"
   ]
 }
