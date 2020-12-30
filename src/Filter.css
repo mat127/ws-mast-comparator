@@ -8,3 +8,24 @@ label.group {
   padding-bottom: 0.3rem;
   font-weight: bold;
 }
+
+button.name-prefix {
+  background: none;
+  color: black;
+  border: 2px solid black;
+  border-radius: 4px;
+  margin: 1px;
+  padding: 0.3em;
+  cursor: pointer;
+}
+
+button.name-prefix:hover {
+  font-weight: bold;
+}
+
+button.name-prefix-checked {
+  background: grey;
+  color: white;
+  font-weight: bold;
+}
+

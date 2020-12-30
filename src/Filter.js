@@ -7,33 +7,44 @@ export class FilterState {
     if(source) {
       this.size = new Set(source.size);
       this.year = new Set(source.year);
+      this.namePrefix = new Set(source.namePrefix);
     }
     else {
       this.size = new Set(['SDM', 'RDM']);
       this.year = new Set([2019]);
+      this.namePrefix = new Set();
     }
   }
 
   static createDefaultOptions() {
     return {
       size: [],
-      year: []
+      year: [],
+      namePrefix: []
     };
   }
 
   static createOptions(data) {
-    const years = data.reduce(
-      (all,mast) => all.add(mast.year),
-      new Set()
-    );
-    const sizes = data.reduce(
-      (all,mast) => all.add(mast.size),
-      new Set()
-    );
-    return {
-      size: Array.from(sizes),
-      year: Array.from(years)
+    let options = {
+      size: new Set(),
+      year: new Set(),
+      namePrefix: new Set()
     };
+    data.forEach(
+      function(mast) {
+        options.size.add(mast.size);
+        options.year.add(mast.year);
+        options.namePrefix.add(mast.name.substr(0,1).toUpperCase());
+      }
+    );
+    options = {
+      size: Array.from(options.size),
+      year: Array.from(options.year),
+      namePrefix: Array.from(options.namePrefix)
+    };
+    options.year.sort((y1,y2) => y2-y1);
+    options.namePrefix.sort();
+    return options;
   }
 
   clone() {
@@ -42,7 +53,8 @@ export class FilterState {
 
   filter(mast) {
     return this.filterSize(mast.size)
-      && this.filterYear(mast.year);
+      && this.filterYear(mast.year)
+      && this.filterName(mast.name);
   }
 
   filterSize(size) {
@@ -51,6 +63,11 @@ export class FilterState {
 
   filterYear(year) {
     return this.year.size > 0 ? this.year.has(year) : true;
+  }
+
+  filterName(name) {
+    const prefix = name.substr(0,1).toUpperCase();
+    return this.namePrefix.size > 0 ? this.namePrefix.has(prefix) : true;
   }
 }
 
@@ -73,21 +90,23 @@ export default class Filter extends React.Component {
           state={state.year}
           onChange={e => this.yearChanged(e)}
         />
+        <NamePrefixGroup
+          options={options.namePrefix}
+          state={state.namePrefix}
+          onChange={e => this.namePrefixChanged(e)}
+        />
       </div>
     );
   }
 
-  optionChanged(event, state) {
-    if(event.target.checked)
-      state.add(event.target.id);
-    else
-      state.delete(event.target.id);
-  }
-  
   sizeChanged(event) {
-    this.props.onChange(
-      state => this.optionChanged(event, state.size)
-    );
+    const size = event.target.id;
+    this.props.onChange(function(state) {
+      if(event.target.checked)
+        state.size.add(size);
+      else
+        state.size.delete(size);
+    });
   }
 
   yearChanged(event) {
@@ -97,6 +116,16 @@ export default class Filter extends React.Component {
         state.year.add(year);
       else
         state.year.delete(year);
+    });
+  }
+
+  namePrefixChanged(event) {
+    const prefix = event.target.id;
+    this.props.onChange(function(state) {
+      if(state.namePrefix.has(prefix))
+        state.namePrefix.delete(prefix);
+      else
+        state.namePrefix.add(prefix);
     });
   }
 };
@@ -126,5 +155,36 @@ function FilterGroupOption(props) {
       <input type="checkbox" {...props} />
       <label htmlFor={props.id}>{props.id}</label>
     </div>
+  );
+}
+
+function NamePrefixGroup(props) {
+  const options = props.options.map(
+    function(prefix) {
+      return <NamePrefixOption
+        key={prefix} prefix={prefix}
+        state={props.state}
+        onChange={props.onChange}
+      />;
+    });
+  return (
+    <div>
+      <label className="group">Producer:</label>
+      {options}
+    </div>
+  );
+}
+
+function NamePrefixOption(props) {
+  const isChecked = props.state.has(props.prefix);
+  let className = 'name-prefix';
+  if(isChecked)
+    className += ' name-prefix-checked';
+  return (
+    <button
+      className={className}
+      id={props.prefix}
+      onClick={props.onChange}
+    >{props.prefix}</button>
   );
 }
