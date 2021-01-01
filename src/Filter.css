@@ -4,9 +4,16 @@
 
 label.group {
   display: block;
-  padding-top: 0.7em;
   padding-bottom: 0.3em;
   font-weight: bold;
+}
+
+div.group {
+  white-space: normal;
+}
+
+div.group:nth-child(n+2) {
+  padding-top: 0.7em;
 }
 
 button.name-prefix {

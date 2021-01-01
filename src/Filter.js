@@ -156,7 +156,7 @@ function FilterGroup(props) {
     )
   );
   return (
-    <div>
+    <div className="group">
       <label className="group">{props.label}</label>
       {items}
     </div>
@@ -182,7 +182,7 @@ function NamePrefixGroup(props) {
       />;
     });
   return (
-    <div>
+    <div className="group">
       <label className="group">Producer:</label>
       {options}
     </div>

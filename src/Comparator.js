@@ -61,7 +61,7 @@ export default class Comparator extends React.Component {
 
   render() {
     return (
-      <div>
+      <div id="comparator">
         <Filter
           state={this.state.filter.state}
           options={this.state.filter.options}

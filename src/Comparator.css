@@ -1,5 +1,9 @@
 body {
-    padding: 1rem;
+  padding: 1rem;
+}
+
+#comparator {
+  white-space: nowrap;
 }
 
 #filter {
@@ -24,7 +28,7 @@ tr {
 }
 
 thead {
-    background-color: lightgrey
+  background-color: lightgrey
 }
 
 th,
