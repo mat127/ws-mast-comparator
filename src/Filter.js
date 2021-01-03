@@ -1,76 +1,6 @@
 import React from 'react'
 import './Filter.css';
 
-export class FilterState {
-
-  constructor(source) {
-    if(source) {
-      this.diameter = new Set(source.diameter);
-      this.year = new Set(source.year);
-      this.namePrefix = new Set(source.namePrefix);
-    }
-    else {
-      this.diameter = new Set(['SDM', 'RDM']);
-      this.year = new Set([2019]);
-      this.namePrefix = new Set();
-    }
-  }
-
-  static createDefaultOptions() {
-    return {
-      diameter: [],
-      year: [],
-      namePrefix: []
-    };
-  }
-
-  static createOptions(data) {
-    let options = {
-      diameter: new Set(),
-      year: new Set(),
-      namePrefix: new Set()
-    };
-    data.forEach(
-      function(mast) {
-        options.diameter.add(mast.diameter);
-        options.year.add(mast.year);
-        options.namePrefix.add(mast.name.substr(0,1).toUpperCase());
-      }
-    );
-    options = {
-      diameter: Array.from(options.diameter),
-      year: Array.from(options.year),
-      namePrefix: Array.from(options.namePrefix)
-    };
-    options.year.sort((y1,y2) => y2-y1);
-    options.namePrefix.sort();
-    return options;
-  }
-
-  clone() {
-    return new FilterState(this);
-  }
-
-  filter(mast) {
-    return this.filterDiameter(mast.diameter)
-      && this.filterYear(mast.year)
-      && this.filterName(mast.name);
-  }
-
-  filterDiameter(diameter) {
-    return this.diameter.size > 0 ? this.diameter.has(diameter) : true;
-  }
-
-  filterYear(year) {
-    return this.year.size > 0 ? this.year.has(year) : true;
-  }
-
-  filterName(name) {
-    const prefix = name.substr(0,1).toUpperCase();
-    return this.namePrefix.size > 0 ? this.namePrefix.has(prefix) : true;
-  }
-}
-
 export default class Filter extends React.Component {
 
   render() {
@@ -104,42 +34,33 @@ export default class Filter extends React.Component {
   diameterChanged(event) {
     const diameter = event.target.id;
     this.props.onChange(function(state) {
-      if(event.target.checked)
-        state.diameter.add(diameter);
-      else
-        state.diameter.delete(diameter);
+      state.selectDiameter(diameter, event.target.checked);
     });
   }
 
   yearChanged(event) {
     const year = parseInt(event.target.id);
     this.props.onChange(function(state) {
-      if(event.target.checked)
-        state.year.add(year);
-      else
-        state.year.delete(year);
+      state.selectYear(year, event.target.checked);
     });
   }
 
   clearYearFilter() {
     this.props.onChange(function(state) {
-      state.year.clear();
+      state.clearYear();
     });
   }
 
   namePrefixChanged(event) {
     const prefix = event.target.id;
     this.props.onChange(function(state) {
-      if(state.namePrefix.has(prefix))
-        state.namePrefix.delete(prefix);
-      else
-        state.namePrefix.add(prefix);
+      state.toggleNamePrefix(prefix);
     });
   }
 
   clearNamePrefixFilter() {
     this.props.onChange(function(state) {
-      state.namePrefix.clear();
+      state.clearNamePrefix();
     });
   }
 };

@@ -1,65 +1,32 @@
 import React from 'react'
-import Filter, { FilterState } from './Filter.js';
+
+import MastDataModel, {ProfileClass} from './model/MastDataModel.js';
+import ComparedMastsModel from './model/ComparedMastsModel.js';
+import FilterState, {FilterOptions} from './model/FilterState.js';
+
+import Filter from './Filter.js';
+
 import './Comparator.css';
-
-import loadMastData from './mast/all.js'
-
-class ProfileClass {
-
-  constructor(min,max,className) {
-    this.min = min;
-    this.max = max;
-    this.className = className;
-  }
-
-  includes(profile) {
-    return profile >= this.min && profile <= this.max;
-  }
-
-  getTypical() {
-    return (this.min + this.max)/2;
-  }
-
-  static HardTop = new ProfileClass(1,5,'hard-top');
-  static ConstantCurve = new ProfileClass(6,10,'constant-curve');
-  static FlexTop = new ProfileClass(11,15,'flex-top');
-
-  static All = [
-    this.HardTop,
-    this.ConstantCurve,
-    this.FlexTop
-  ];
-
-  static getClassOf(profile) {
-    return this.All.find(cls => cls.includes(profile));
-  }
-
-  static getClassNameOf(profile) {
-    const cls = this.getClassOf(profile);
-    return cls ? cls.className : undefined;
-  }
-}
 
 export default class Comparator extends React.Component {
   
   constructor(props) {
     super(props);
     this.state = {
-      allMasts: [],
-      comparedMasts: [],
+      allMasts: new MastDataModel(),
+      compared: new ComparedMastsModel(),
       highlightedProfile: undefined,
       filter: {
         state: new FilterState(),
-        options: FilterState.createDefaultOptions()
+        options: new FilterOptions()
       }
     };
-    loadMastData().then(data => {
-      this.setMastData(data);
-      return data;
-    });
+    MastDataModel.load()
+      .then(model => this.setMastDataModel(model));
   }
 
   render() {
+    let filtered = this.getFiltered();
     return (
       <div id="comparator">
         <Filter
@@ -70,12 +37,11 @@ export default class Comparator extends React.Component {
         <table>
           <ComparatorHeader comparator={this} />
           <tbody>
-            <ComparedMasts masts={this.state.comparedMasts} comparator={this}/>
+            <ComparedMasts model={this.state.compared} comparator={this}/>
             <ComparatorFooter comparator={this}/>
             <SortingHeader comparator={this}/>
             <NotComparedMasts
-              masts={this.state.allMasts}
-              filter={m => this.state.filter.state.filter(m)}
+              model={filtered}
               comparator={this}
             />
           </tbody>
@@ -84,12 +50,19 @@ export default class Comparator extends React.Component {
     );
   }
 
-  setMastData(data) {
+  getFiltered() {
+    const compared = this.state.compared;
+    const filter = this.state.filter.state;
+    return this.state.allMasts
+      .filter(m => !compared.isCompared(m) && filter.filter(m))
+  }
+
+  setMastDataModel(model) {
     this.setState({
-      allMasts: data,
+      allMasts: model,
       filter: {
         state: this.state.filter.state,
-        options: FilterState.createOptions(data)
+        options: new FilterOptions(model)
       }
     });
   }
@@ -107,35 +80,33 @@ export default class Comparator extends React.Component {
 
   compare(mast) {
     let change = {
-      comparedMasts: this.state.comparedMasts.concat([mast])
+      compared: this.state.compared.add(mast)
     };
-    change.highlightedProfile = change.comparedMasts[0].profile;
+    change.highlightedProfile = change.compared.getProfile();
     this.setState(change);
   }
 
   remove(mast) {
     let change = {
-      comparedMasts: this.state.comparedMasts.filter(m => m !== mast)
+      compared: this.state.compared.remove(mast)
     };
-    change.highlightedProfile = change.comparedMasts.length > 0 ?
-      change.comparedMasts[0].profile :
-      undefined;
+    change.highlightedProfile = change.compared.getProfile();
     this.setState(change);
   }
 
   removeAll() {
     this.setState({
-      comparedMasts: [],
+      compared: this.state.compared.removeAll(),
       highlightedProfile: undefined
     });
   }
 
   isCompared(mast) {
-    return this.state.comparedMasts.includes(mast);
+    return this.state.compared.isCompared(mast);
   }
 
   isAnyCompared() {
-    return this.state.comparedMasts.length > 0;
+    return this.state.compared.isAnyCompared();
   }
 
   isHighlighted(profile) {
@@ -146,17 +117,6 @@ export default class Comparator extends React.Component {
     return profileClass.includes(this.state.highlightedProfile);
   }
     
-  sortProfileFirst(profile) {
-    const sorted = Array.from(this.state.allMasts)
-      .sort((m1,m2) => this.compareToProfile(m1,m2,profile));
-    const state = {
-      allMasts: sorted
-    };
-    if(!this.isAnyCompared())
-      state.highlightedProfile = profile;
-    this.setState(state);
-  }
-
   getProfileClassName(profile) {
     let className = ProfileClass.getClassNameOf(profile);
     if(this.isHighlighted(profile))
@@ -164,11 +124,18 @@ export default class Comparator extends React.Component {
     return className;
   }
 
+  sortProfileFirst(profile) {
+    let state = {
+      allMasts: this.state.allMasts.sortProfileFirst(profile)
+    };
+    if(!this.isAnyCompared())
+      state.highlightedProfile = profile;
+    this.setState(state);
+  }
+
   sortByName(sort) {
-    const sorted = Array.from(this.state.allMasts)
-      .sort(sort);
     const state = {
-      allMasts: sorted
+      allMasts: this.state.allMasts.sort(sort)
     };
     if(!this.isAnyCompared())
       state.highlightedProfile = undefined;
@@ -176,39 +143,13 @@ export default class Comparator extends React.Component {
   }
 
   sortByNameDescending() {
-    this.sortByName((m1,m2) => -1*this.compareMastName(m1,m2));
+    this.sortByName(
+      (m1,m2) => -1*MastDataModel.compareMastName(m1,m2)
+    );
   }
 
   sortByNameAscending() {
-    this.sortByName(this.compareMastName);
-  }
-
-  compareToMast(m1,m2,mast) {
-    if(m1 === mast)
-      return -1;
-    else if(m2 === mast)
-      return 1;
-    else
-      return this.compareToProfile(m1,m2,mast.profile);
-  }
-
-  compareToProfile(m1,m2,profile) {
-    const dp1 = Math.abs(m1.profile - profile);
-    const dp2 = Math.abs(m2.profile - profile);
-    const dp = dp1 - dp2;
-    if(dp === 0)
-      return this.compareMastName(m1,m2);
-    else
-      return dp;
-  }
-  
-  compareMastName(m1,m2) {
-    if(m1.name < m2.name)
-      return -1;
-    else if(m1.name > m2.name)
-      return 1;
-    else
-      return 0;
+    this.sortByName(MastDataModel.compareMastName);
   }
 };
  
@@ -339,7 +280,7 @@ function ComparedMasts(props) {
       onClick={() => comparator.remove(mast)}
     >✖</span>
   ];
-  return props.masts
+  return props.model.masts
     .map(m => <MastRow {...props} mast={m} buttons={buttons(m)} key={m.id}/>);
 }
 
@@ -353,9 +294,8 @@ function NotComparedMasts(props) {
       onClick={() => comparator.compare(mast)}
     >✚</span>
   ];
-  return props.masts
-      .filter(m => !comparator.isCompared(m) && props.filter(m))
-      .map((m) => <MastRow {...props} mast={m} buttons={buttons(m)} key={m.id}/>);
+  return props.model
+    .map((m) => <MastRow {...props} mast={m} buttons={buttons(m)} key={m.id}/>);
 }
 
 function MastRow(props) {
