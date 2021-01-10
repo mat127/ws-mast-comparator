@@ -1,0 +1,150 @@
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css');
+@import 'MastProfile.css';
+
+table.mobile-app-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  border: none;
+  background-color: navy;
+  color: whitesmoke;
+}
+
+.mobile-app-header * {
+  border: none;
+  background-color: navy;
+  color: whitesmoke;
+}
+
+div.mobile-app-header-spacer {
+  height: 48px;
+}
+
+.mobile-app-header td {
+  text-align: left;
+  vertical-align: middle;
+}
+
+.mobile-app-header h1 {
+  font-size: larger;
+  margin: 0;
+}
+
+td.mobile-app-menu {
+  text-align: right;
+}
+
+.mobile-app-menu button {
+  font-size: larger;
+}
+
+#mobile-comparator-table {
+  border: none;
+  width: 100%;
+}
+
+#mobile-comparator-table td {
+  border: none;
+  text-align: left;
+}
+
+.mast-profile-bar {
+  width: 80%;
+  height: 7px;
+  margin-top: 8px;
+}
+
+span.mast-name {
+  display: inline-block;
+  padding: 3px;
+}
+
+.mast-property {
+  float: right;
+  border: 1px solid black;
+  border-radius: 3px;
+  padding: 2px;
+  margin: 2px;
+  background-color: lightgrey;
+}
+
+.mast-property-profile {
+  float: right;
+  border: none;
+  border-radius: 3px;
+  padding: 3px;
+  margin: 2px;
+  color: whitesmoke;
+  font-weight: bold;
+}
+
+table#mobile-filter {
+  border: none;
+  width: 100%;
+}
+
+#mobile-filter label {
+  display: inline-block;
+  font-weight: bold;
+  padding-top: 6px;
+}
+
+#mobile-filter td {
+  border: none;
+  vertical-align: top;
+}
+
+td.mobile-filter-label {
+  text-align: right;
+}
+
+td.mobile-filter-options {
+  text-align: left;
+}
+
+td.mobile-filter-buttons {
+  text-align: right;
+}
+
+button.mobile-filter-option {
+  border: 1px solid black;
+  border-radius: 3px;
+  padding: 3px;
+  margin: 2px;
+  cursor: pointer;
+}
+
+button.mobile-filter-option-checked {
+  background: grey;
+  color: white;
+  font-weight: bold;
+}
+
+button.mobile-filter-clear {
+  border: none;
+  border-radius: 3px;
+  background-color: navy;
+  color: whitesmoke;
+  padding: 4px .7em;
+  margin: 2px;
+  font-weight: bold;
+}
+
+button.mobile-button {
+  border: none;
+  border-radius: 5px;
+  padding: .5em .8em .5em .8em;
+  background-color: navy;
+  color: whitesmoke;
+  font-weight: bold;
+}
+
+td.mobile-filter-apply {
+  text-align: right;
+}
+
+.mobile-filter-apply button {
+  margin: 2px;
+}
+

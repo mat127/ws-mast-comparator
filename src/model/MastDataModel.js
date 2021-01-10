@@ -1,8 +1,9 @@
 export class ProfileClass {
 
-  constructor(min,max,className) {
+  constructor(min,max,shortName,className) {
     this.min = min;
     this.max = max;
+    this.shortName = shortName;
     this.className = className;
   }
 
@@ -14,9 +15,9 @@ export class ProfileClass {
     return (this.min + this.max)/2;
   }
 
-  static HardTop = new ProfileClass(1,5,'hard-top');
-  static ConstantCurve = new ProfileClass(6,10,'constant-curve');
-  static FlexTop = new ProfileClass(11,15,'flex-top');
+  static HardTop = new ProfileClass(1,5,'HT','hard-top');
+  static ConstantCurve = new ProfileClass(6,10,'CC','constant-curve');
+  static FlexTop = new ProfileClass(11,15,'FT','flex-top');
 
   static All = [
     this.HardTop,
@@ -31,6 +32,10 @@ export class ProfileClass {
   static getClassNameOf(profile) {
     const cls = this.getClassOf(profile);
     return cls ? cls.className : undefined;
+  }
+
+  static asRelative(profile) {
+    return profile/ProfileClass.FlexTop.max;
   }
 }
 

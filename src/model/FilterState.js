@@ -29,11 +29,13 @@ export default class FilterState {
 
   constructor(source) {
     if(source) {
+      this.visible = source.visible;
       this.diameter = new Set(source.diameter);
       this.year = new Set(source.year);
       this.namePrefix = new Set(source.namePrefix);
     }
     else {
+      this.visible = false;
       this.diameter = new Set(['SDM', 'RDM']);
       this.year = new Set([2019]);
       this.namePrefix = new Set();
@@ -51,11 +53,25 @@ export default class FilterState {
       this.diameter.delete(diameter);
   }
 
+  toggleDiameter(diameter) {
+    if(this.diameter.has(diameter))
+      this.diameter.delete(diameter);
+    else
+      this.diameter.add(diameter);
+  }
+
   selectYear(year, selected) {
     if(selected)
       this.year.add(year);
     else
       this.year.delete(year);
+  }
+
+  toggleYear(year) {
+    if(this.year.has(year))
+      this.year.delete(year);
+    else
+      this.year.add(year);
   }
 
   clearYear() {

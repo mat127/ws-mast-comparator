@@ -1,9 +1,14 @@
-body {
-  padding: 1rem;
+@import 'MastProfile.css';
+
+#desktop-comparator {
+  display: table;
+  margin-left: auto;
+  margin-right: auto;
+  white-space: nowrap;
 }
 
-#comparator {
-  white-space: nowrap;
+.app-header {
+  text-align: center;
 }
 
 #filter {
@@ -13,40 +18,31 @@ body {
   vertical-align: top;
 }
 
-table {
+#desktop-comparator table {
   display: inline-block;
   border-spacing: 0;
-  border: 1px solid black;
+  border-left: 1px solid black;
+  border-top: 1px solid black;
 }
 
-tr {
-  :last-child {
-    td {
-      border-bottom: 0;
-    }
-  }
-}
-
-thead {
+#desktop-comparator thead {
   background-color: lightgrey
 }
 
-th,
-td {
+#desktop-comparator th, td {
   margin: 0;
   padding: 0.5rem;
   border-bottom: 1px solid black;
   border-right: 1px solid black;
   text-align: center;
-
   :last-child {
     border-right: 0;
   }
 }
 
 td.header {
-    font-weight: bold;
-    background-color: lightgrey
+  font-weight: bold;
+  background-color: lightgrey
 }
 
 td.mast-name {
@@ -93,22 +89,6 @@ button.hypertext {
 button.profile-group-header {
     color: black;
     font-weight: bold;
-}
-
-.hard-top {
-  background: #00a3e2;
-}
-
-.hard-top {
-  background: #00a3e2;
-}
-
-.constant-curve {
-  background: #c2cd2d;
-}
-
-.flex-top {
-  background: #eb5834;
 }
 
 .highlighted {

@@ -1,5 +1,5 @@
 import ReactDOM from 'react-dom';
-import Comparator from './Comparator';
+import Comparator from './view/Comparator.js';
 import './index.css';
 
 ReactDOM.render(
