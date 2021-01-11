@@ -24,11 +24,15 @@ export default function MobileComparator(props) {
         isFilterVisible={filter.state.visible}
         onShowFilter={() => comparator.showFilter()}
         onHideFilter={() => comparator.hideFilter()}
+        onSortByName={() => comparator.sortByNameAscending()}
       />
       {filterComponent}
       <table id="mobile-comparator-table">
         <tbody>
-          <MastBrowser model={filtered}/>
+          <MastBrowser
+            model={filtered}
+            comparator={comparator}
+          />
         </tbody>
       </table>
     </div>
@@ -36,13 +40,18 @@ export default function MobileComparator(props) {
 }
 
 function ComparatorHeader(props) {
-  const menuButton = props.isFilterVisible ?
+  const filterButton = props.isFilterVisible ?
     <HideFilterButton onClick={props.onHideFilter} /> :
     <ShowFilterButton onClick={props.onShowFilter} />;
   return [
     <table className="mobile-app-header" key="1"><thead><tr>
       <td><h1>Mast Profile Comparator</h1></td>
-      <td className="mobile-app-menu">{menuButton}</td>
+      <td className="mobile-app-menu">
+        <button onClick={props.onSortByName}>
+          <i className="fa fa-sort-alpha-asc" aria-hidden="true"></i>
+        </button>
+        {filterButton}
+      </td>
     </tr></thead></table>,
     <div className="mobile-app-header-spacer" key="2"></div>
   ];
@@ -83,7 +92,10 @@ function MastRow(props) {
         <span className="mast-property">{props.mast.length}</span>
         <span className="mast-property">{props.mast.diameter}</span>
         <span className="mast-property">{props.mast.year}</span>
-        <span className={profileShortNameClassName}>{mastProfileClass.shortName}</span>
+        <button
+          className={profileShortNameClassName}
+          onClick={() => props.comparator.sortProfileFirst(props.mast.profile)}
+        >{mastProfileClass.shortName}</button>
         <div className={profileBarClassName} style={profileBarStyle}/>
       </td>
     </tr>

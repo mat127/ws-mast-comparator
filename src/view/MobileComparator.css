@@ -11,6 +11,10 @@ table.mobile-app-header {
   color: whitesmoke;
 }
 
+#mobile-comparator button {
+  cursor: pointer;
+}
+
 .mobile-app-header * {
   border: none;
   background-color: navy;
@@ -112,7 +116,6 @@ button.mobile-filter-option {
   border-radius: 3px;
   padding: 3px;
   margin: 2px;
-  cursor: pointer;
 }
 
 button.mobile-filter-option-checked {
